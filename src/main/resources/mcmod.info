@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "${modid}",
+    "name": "Mqrtin's Utility",
+    "description": "Forge 1.8.9 mod setup",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": ["mqrtin"],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

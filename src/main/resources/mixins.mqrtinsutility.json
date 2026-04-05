@@ -1,0 +1,11 @@
+{
+  "required": false,
+  "minVersion": "0.7.11",
+  "package": "fr.mqrtin.utility.mixin",
+  "plugin": "fr.mqrtin.utility.mixin.init.FMLLoadingPlugin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "mixins.mqrtinsutility.refmap.json",
+  "mixins": [],
+  "client": ["MixinGuiIngameForge"],
+  "server": []
+}

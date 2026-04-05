@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.7.11",
+  "package": "fr.mqrtin.utility.mixin",
+  "plugin": "fr.mqrtin.utility.init.FMLLoadingPlugin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "mixins.mangoo.refmap.json",
+  "mixins": [],
+  "client": [],
+  "server": []
+}
+
