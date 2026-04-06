@@ -6,6 +6,6 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "mixins.mqrtinsutility.refmap.json",
   "mixins": [],
-  "client": ["MixinGuiIngameForge", "MixinMinecraft"],
+  "client": ["MixinGuiIngameForge", "MixinMinecraft", "MixinEntityRenderer"],
   "server": []
 }

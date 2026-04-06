@@ -19,10 +19,9 @@ public class LabelModule extends Module {
 
     public LabelModule() {
         super("Label");
-        labels.add(LabelPreset.getFormat(LabelPreset.CLOCK, LabelType.SEMI_ARROW));
-        labels.add(LabelPreset.getFormat(LabelPreset.FPS, LabelType.SEMI_ARROW));
-        labels.add(LabelPreset.getFormat(LabelPreset.CPS, LabelType.SEMI_ARROW));
-        labels.add(LabelPreset.getFormat(LabelPreset.COORDINATES, LabelType.SEMI_ARROW));
+        for (LabelPreset value : LabelPreset.values()) {
+            labels.add(value.getFormat(LabelType.SEMI_ARROW));
+        }
     }
 
     @EventTarget

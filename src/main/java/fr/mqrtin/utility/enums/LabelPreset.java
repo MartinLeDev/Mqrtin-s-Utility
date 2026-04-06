@@ -17,6 +17,9 @@ public enum LabelPreset {
         this.labelValue = value;
     }
 
+    public String getFormat(LabelType type){
+        return type.getFormatted(this.getLabelName(), this.getLabelValue());
+    }
 
     public static String getFormat(LabelPreset preset, LabelType type){
         return type.getFormatted(preset.getLabelName(), preset.getLabelValue());

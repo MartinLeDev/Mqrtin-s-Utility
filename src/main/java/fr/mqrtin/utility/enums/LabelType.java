@@ -5,10 +5,10 @@ import java.util.regex.Matcher;
 
 public enum LabelType {
 
-    ARROW("{0} -> {1}"),
-    SEMI_ARROW("{0} > {1}"),
-    EQUALS("{0} = {1}"),
-    COLON("{0}: {1}"),
+    ARROW("{0} -> §c{1}"),
+    SEMI_ARROW("{0} > §c{1}"),
+    EQUALS("{0} = §c{1}"),
+    COLON("{0}: §c{1}"),
     DASH("{0} - {1}"),
     SPACE("{0} {1}"),
     RAW_VALUE("{1}"),

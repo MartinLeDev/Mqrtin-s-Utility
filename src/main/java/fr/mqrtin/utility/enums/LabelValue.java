@@ -17,6 +17,7 @@ public enum LabelValue {
     PLAYER_FACING("player_facing", () -> Minecraft.getMinecraft().thePlayer.getHorizontalFacing().getName()),
     CPS_LEFT("cps_left", () -> CPSCounter.getLeftCPS() + ""),
     CPS_RIGHT("cps_right", () -> CPSCounter.getRightCPS() + ""),
+    FPS("fps", () -> String.valueOf(Minecraft.getDebugFPS()))
 
     ;
     private final String name;

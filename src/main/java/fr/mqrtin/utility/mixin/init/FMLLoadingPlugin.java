@@ -60,9 +60,22 @@ public class FMLLoadingPlugin implements IMixinConfigPlugin {
     }
 
     public void tryAddMixinClass(String className) {
-        String norm = (className.endsWith(".class") ? className.substring(0, className.length() - ".class".length()) : className).replace("\\", "/").replace("/", ".");
-        if (norm.startsWith(this.getMixinPackage() + ".") && !norm.endsWith(".")) {
-            this.mixins.add(norm.substring(this.getMixinPackage().length() + 1));
+        if (!className.endsWith(".class")) {
+            return;
+        }
+
+        String norm = className.substring(0, className.length() - ".class".length()).replace("\\", "/").replace("/", ".");
+        if (!norm.startsWith(this.getMixinPackage() + ".") || norm.endsWith(".")) {
+            return;
+        }
+
+        String relativeName = norm.substring(this.getMixinPackage().length() + 1);
+        if (relativeName.contains(".")) {
+            return;
+        }
+
+        if (relativeName.startsWith("Mixin")) {
+            this.mixins.add(relativeName);
         }
     }
 
@@ -93,7 +106,7 @@ public class FMLLoadingPlugin implements IMixinConfigPlugin {
     private void walkDir(Path classRoot) {
         System.out.println("Trying to find mixins from directory");
         try (Stream<Path> classes = Files.walk(classRoot.resolve(this.getMixinBaseDir()))) {
-            classes.map((it) -> classRoot.relativize(it).toString()).forEach(this::tryAddMixinClass);
+            classes.filter(Files::isRegularFile).map((it) -> classRoot.relativize(it).toString()).forEach(this::tryAddMixinClass);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
