@@ -2,6 +2,9 @@ package fr.mqrtin.utility.module.property;
 
 
 import fr.mqrtin.utility.module.impl.Module;
+import fr.mqrtin.utility.module.property.properties.KeyBindProperty;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -53,6 +56,11 @@ public class PropertyManager {
         if (module.keybindProperty != null) {
             moduleProperties.add(module.keybindProperty);
         }
+
+        moduleProperties.forEach(property -> {
+            if(property instanceof KeyBindProperty)
+                ClientRegistry.registerKeyBinding(((KeyBindProperty) property).getKeyBinding());
+        });
 
         // Enregistrer les propriétés du module
         if (!moduleProperties.isEmpty()) {

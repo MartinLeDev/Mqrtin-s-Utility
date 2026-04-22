@@ -1,8 +1,8 @@
-package fr.mqrtin.utility.gui;
+package fr.mqrtin.utility.gui.clickgui;
 
 import fr.mqrtin.utility.module.ModuleCategory;
 import fr.mqrtin.utility.module.impl.Module;
-import fr.mqrtin.utility.gui.components.CategoryComponent;
+import fr.mqrtin.utility.gui.clickgui.components.CategoryComponent;
 
 import java.util.ArrayList;
 import java.util.Optional;

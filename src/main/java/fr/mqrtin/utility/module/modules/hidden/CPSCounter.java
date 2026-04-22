@@ -17,6 +17,7 @@ public class CPSCounter extends Module{
 
     public CPSCounter() {
         super("CPSCounter", ModuleCategory.HIDDEN, false);
+        setForceEnabled(true);
     }
 
     @Override

@@ -2,6 +2,7 @@ package fr.mqrtin.utility.enums;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
+import com.lunarclient.apollo.common.v1.BlockLocation;
 import com.lunarclient.apollo.common.v1.Uuid;
 import com.lunarclient.apollo.glow.v1.OverrideGlowEffectMessage;
 import com.lunarclient.apollo.notification.v1.DisplayNotificationMessage;
@@ -9,8 +10,11 @@ import com.lunarclient.apollo.player.v1.UpdatePlayerWorldMessage;
 import com.lunarclient.apollo.player.v1.PlayerHandshakeMessage;
 import com.lunarclient.apollo.waypoint.v1.DisplayWaypointMessage;
 import com.lunarclient.apollo.waypoint.v1.RemoveWaypointMessage;
+import fr.mqrtin.utility.module.impl.Module;
+import fr.mqrtin.utility.module.modules.QOL.WaypointModule;
 import fr.mqrtin.utility.utils.TextUtils;
 
+import java.awt.*;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -48,7 +52,29 @@ public enum ApolloPacketType {
     DISPLAY_WAYPOINT(
             "DisplayWaypointMessage",
             DisplayWaypointMessage.class,
-            msg -> System.out.println("[Apollo] Waypoint reçu: " + msg.toString())
+            msg -> {
+                DisplayWaypointMessage displayWaypointMessage = (DisplayWaypointMessage) msg;
+                TextUtils.log("[Apollo] Waypoint reçu: " + displayWaypointMessage.toString());
+                TextUtils.log("Name : " + displayWaypointMessage.getName());
+                TextUtils.log("Color : " + displayWaypointMessage.getColor());
+                TextUtils.log("Hidden : " + displayWaypointMessage.getHidden());
+                TextUtils.log("PreventRemoval : " + displayWaypointMessage.getPreventRemoval());
+                BlockLocation location = displayWaypointMessage.getLocation();
+                TextUtils.log("Monde : " + location.getWorld());
+                TextUtils.log("X : " + location.getX());
+                TextUtils.log("Y : " + location.getY());
+                TextUtils.log("Z : " + location.getZ());
+
+                WaypointModule instance = Module.getInstance(WaypointModule.class);
+                instance.getWaypoints().add(new WaypointModule.Waypoint(
+                        displayWaypointMessage.getName(),
+                        new Color(displayWaypointMessage.getColor().getColor()),
+                        location.getX(),
+                        location.getY(),
+                        location.getZ(),
+                        true
+                ));
+            }
     ),
 
     REMOVE_WAYPOINT(

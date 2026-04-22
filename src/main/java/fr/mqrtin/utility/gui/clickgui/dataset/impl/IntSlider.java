@@ -1,13 +1,13 @@
-package fr.mqrtin.utility.gui.dataset.impl;
+package fr.mqrtin.utility.gui.clickgui.dataset.impl;
 
-import fr.mqrtin.utility.module.property.properties.PercentProperty;
-import fr.mqrtin.utility.gui.dataset.Slider;
+import fr.mqrtin.utility.module.property.properties.IntProperty;
+import fr.mqrtin.utility.gui.clickgui.dataset.Slider;
 import fr.mqrtin.utility.module.property.Property;
 
-public class PercentageSlider extends Slider {
-    private final PercentProperty property;
+public class IntSlider extends Slider {
+    private final IntProperty property;
 
-    public PercentageSlider(PercentProperty property) {
+    public IntSlider(IntProperty property) {
         this.property = property;
     }
 
@@ -51,7 +51,7 @@ public class PercentageSlider extends Slider {
 
     @Override
     public String getValueColorString() {
-        return String.valueOf(property.getValue()) + "%";
+        return String.valueOf(property.getValue());
     }
 
     @Override

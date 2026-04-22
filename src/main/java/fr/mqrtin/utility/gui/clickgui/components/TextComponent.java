@@ -1,8 +1,8 @@
 
-package fr.mqrtin.utility.gui.components;
+package fr.mqrtin.utility.gui.clickgui.components;
 
 import fr.mqrtin.utility.module.property.properties.TextProperty;
-import fr.mqrtin.utility.gui.Component;
+import fr.mqrtin.utility.gui.clickgui.Component;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 

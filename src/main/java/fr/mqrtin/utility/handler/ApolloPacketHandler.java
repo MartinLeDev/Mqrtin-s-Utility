@@ -87,7 +87,7 @@ public class ApolloPacketHandler {
      */
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (handshakeSent || Minecraft.getMinecraft().getNetHandler() == null) {
+        if (handshakeSent || Minecraft.getMinecraft().getNetHandler() == null ||Minecraft.getMinecraft().getCurrentServerData() == null) {
             return;
         }
 
@@ -96,12 +96,6 @@ public class ApolloPacketHandler {
             ticksWaitingForRegister++;
             if (ticksWaitingForRegister == 1) {
                 System.out.println("[ApolloHandler] ⏳ Attente de 10 ticks avant envoi...");
-                // Envoyer MC|Brand au premier tick possible
-                /*try {
-                    sendMCBrand();
-                } catch (Exception e) {
-                    System.err.println("[ApolloHandler] Erreur MC|Brand: " + e.getMessage());
-                }*/
             }
             return;
         }
@@ -151,29 +145,6 @@ public class ApolloPacketHandler {
                 System.err.println("[ApolloHandler] ❌ Erreur handshake : " + e.getMessage());
                 e.printStackTrace();
             }
-        }
-    }
-
-    /**
-     * Envoyer le MC|Brand (identifiant comme Lunar Client)
-     */
-    private void sendMCBrand() {
-        try {
-            String brand = ".lunarclient:v2.21.38-2617";
-            byte[] brandBytes = brand.getBytes("UTF-8");
-
-            System.out.println("[ApolloHandler] 📤 Envoi MC|Brand: " + brand);
-
-            PacketBuffer payloadBuffer = new PacketBuffer(Unpooled.wrappedBuffer(brandBytes));
-            C17PacketCustomPayload brandPacket = new C17PacketCustomPayload("MC|Brand", payloadBuffer);
-
-            if (Minecraft.getMinecraft().getNetHandler() != null) {
-                Minecraft.getMinecraft().getNetHandler().addToSendQueue(brandPacket);
-                System.out.println("[ApolloHandler] ✅ MC|Brand envoyé au serveur");
-            }
-        } catch (Exception e) {
-            System.err.println("[ApolloHandler] ❌ Erreur MC|Brand: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 

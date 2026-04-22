@@ -1,7 +1,7 @@
-package fr.mqrtin.utility.gui.dataset.impl;
+package fr.mqrtin.utility.gui.clickgui.dataset.impl;
 
 import fr.mqrtin.utility.module.property.properties.FloatProperty;
-import fr.mqrtin.utility.gui.dataset.Slider;
+import fr.mqrtin.utility.gui.clickgui.dataset.Slider;
 import fr.mqrtin.utility.module.property.Property;
 
 public class FloatSlider extends Slider {

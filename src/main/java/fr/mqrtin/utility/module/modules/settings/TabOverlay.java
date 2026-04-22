@@ -1,6 +1,6 @@
 package fr.mqrtin.utility.module.modules.settings;
 
-import fr.mqrtin.utility.gui.ClickGui;
+import fr.mqrtin.utility.gui.clickgui.ClickGui;
 import fr.mqrtin.utility.module.ModuleCategory;
 import fr.mqrtin.utility.module.impl.Module;
 import net.minecraft.client.Minecraft;

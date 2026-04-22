@@ -1,4 +1,4 @@
-package fr.mqrtin.utility.gui.callback;
+package fr.mqrtin.utility.gui.clickgui.callback;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

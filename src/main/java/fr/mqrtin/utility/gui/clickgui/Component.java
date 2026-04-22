@@ -1,4 +1,4 @@
-package fr.mqrtin.utility.gui;
+package fr.mqrtin.utility.gui.clickgui;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

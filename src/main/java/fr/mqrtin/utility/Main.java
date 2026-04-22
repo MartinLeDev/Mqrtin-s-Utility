@@ -10,7 +10,7 @@ import fr.mqrtin.utility.module.modules.hidden.CPSCounter;
 import fr.mqrtin.utility.module.modules.HUD.LabelModule;
 import fr.mqrtin.utility.module.modules.QOL.NoClickDelay;
 import fr.mqrtin.utility.module.modules.QOL.FullBright;
-import fr.mqrtin.utility.module.modules.QOL.Waypoint;
+import fr.mqrtin.utility.module.modules.QOL.WaypointModule;
 import fr.mqrtin.utility.module.modules.other.DebugModule;
 import fr.mqrtin.utility.module.modules.settings.TabOverlay;
 import fr.mqrtin.utility.module.property.PropertyManager;
@@ -33,7 +33,7 @@ public class Main {
         moduleManager = new ModuleManager();
 
         // Enregistrer les modules
-        moduleManager.register(LabelModule.class, CPSCounter.class, NoClickDelay.class, FullBright.class, TabOverlay.class, Waypoint.class, DebugModule.class);
+        moduleManager.register(LabelModule.class, CPSCounter.class, NoClickDelay.class, FullBright.class, TabOverlay.class, WaypointModule.class, DebugModule.class);
 
         // Créer le PropertyManager et enregistrer les propriétés
         propertyManager = new PropertyManager();
@@ -43,10 +43,11 @@ public class Main {
         configManager = new ConfigManager(propertyManager);
         configManager.loadConfig();
 
-        // Appliquer les états enabled des modules après le chargement
+        // Appliquer les états enabled des modules après le chargement de la config
+        // Les valeurs de enabledProperty ont été mises à jour par loadConfig
         moduleManager.modules.values().forEach(module -> {
             if (module.enabledProperty != null) {
-                module.setEnabled(module.enabledProperty.getValue());
+                module.setEnabled(module.enabledProperty.getValue() || module.isForceEnabled());
             }
         });
 

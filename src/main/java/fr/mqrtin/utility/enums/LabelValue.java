@@ -2,6 +2,7 @@ package fr.mqrtin.utility.enums;
 
 import fr.mqrtin.utility.module.modules.hidden.CPSCounter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ServerData;
 
 import java.time.LocalTime;
 import java.util.function.Supplier;
@@ -19,7 +20,16 @@ public enum LabelValue {
     CPS_LEFT("cps_left", () -> CPSCounter.getLeftCPS() + ""),
     CPS_RIGHT("cps_right", () -> CPSCounter.getRightCPS() + ""),
     FPS("fps", () -> String.valueOf(Minecraft.getDebugFPS())),
-    MS("ms", () -> String.valueOf(Minecraft.getMinecraft().getCurrentServerData().pingToServer))
+    MS("ping_ms", () -> {
+        ServerData serverData = Minecraft.getMinecraft().getCurrentServerData();
+        return serverData != null ? String.valueOf(serverData.pingToServer) : "0";
+    }),
+    SERVER_IP("serverIp", () -> {
+        ServerData currentServerData = Minecraft.getMinecraft().getCurrentServerData();
+        if(currentServerData == null) return "singleplayer";
+        String serverIP = currentServerData.serverIP;
+        return serverIP == null || serverIP.isEmpty() ? "singleplayer" : serverIP;
+    })
 
     ;
     private final String name;

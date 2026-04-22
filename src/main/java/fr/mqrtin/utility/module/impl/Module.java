@@ -12,6 +12,7 @@ public abstract class Module {
 
     private boolean enabled;
     public BooleanProperty enabledProperty;
+    private boolean forceEnabled;
 
     private KeyBinding keybind;
     public KeyBindProperty keybindProperty;
@@ -21,6 +22,12 @@ public abstract class Module {
 
     public boolean isEnabled() {
         return enabled;
+    }
+    public boolean isForceEnabled(){
+        return forceEnabled;
+    }
+    public void setForceEnabled(boolean b){
+        forceEnabled = b;
     }
 
     public void setEnabled(boolean enabled) {
@@ -60,6 +67,11 @@ public abstract class Module {
     public Module(String moduleName, ModuleCategory category, boolean hasKeybind){
         this.moduleName = moduleName;
         this.category = category;
+
+        // Créer la enabledProperty pour gérer l'état du module
+        this.enabledProperty = new BooleanProperty("Enabled", false, () -> false);
+        this.enabledProperty.setOwner(this);
+
         if (hasKeybind) {
             this.keybind = new KeyBinding("Module : " + getModuleName(), 0, "Mqrtin's Utility");
             ClientRegistry.registerKeyBinding(getKeybind());

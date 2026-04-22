@@ -1,5 +1,5 @@
 
-package fr.mqrtin.utility.gui;
+package fr.mqrtin.utility.gui.clickgui;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -7,9 +7,7 @@ import com.google.gson.JsonParser;
 import fr.mqrtin.utility.Main;
 import fr.mqrtin.utility.module.ModuleCategory;
 import fr.mqrtin.utility.module.impl.Module;
-import fr.mqrtin.utility.gui.components.CategoryComponent;
-import fr.mqrtin.utility.gui.components.ModuleComponent;
-import fr.mqrtin.utility.gui.Component;
+import fr.mqrtin.utility.gui.clickgui.components.CategoryComponent;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Mouse;
 

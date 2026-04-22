@@ -1,52 +1,14 @@
-package fr.mqrtin.utility.module.modules.QOL;
+package fr.mqrtin.utility.utils;
 
-import fr.mqrtin.utility.event.EventTarget;
-import fr.mqrtin.utility.event.events.Render3DEvent;
-import fr.mqrtin.utility.module.ModuleCategory;
-import fr.mqrtin.utility.module.impl.Module;
-import fr.mqrtin.utility.module.property.properties.IntProperty;
-import fr.mqrtin.utility.module.property.properties.PercentProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.*;
 
+public class RenderUtil {
 
-public class Waypoint extends Module {
-
-    private final List<NametagData> waypoints;
-
-    private final IntProperty waypointPaddingSize = new IntProperty("Padding Size", 5, 0, 50);
-    private final IntProperty waypointMaxDistance = new IntProperty("Max Distance", 500, -1, 5000);
-    private final PercentProperty waypointScale = new PercentProperty("Distance Scale", 100, 0, 500, () -> true);
-
-    public Waypoint() {
-        super("Waypoint", ModuleCategory.QOL, false);
-        this.waypoints = new ArrayList<>();
-        waypoints.add(new NametagData("0", Color.GREEN, 0, 75, 0));
-    }
-
-    @EventTarget
-    public void onRender3D(Render3DEvent event){
-        if(!isEnabled())
-            return;
-        if(Minecraft.getMinecraft().theWorld == null || Minecraft.getMinecraft().thePlayer == null) return;
-
-
-        float partialTicks = event.getPartialTicks();
-        if (partialTicks < 0.0F) {
-            return;
-        }
-
-        waypoints.forEach( nametagData -> {
-            renderNameTag(nametagData);
-        });
-    }
-
-    private void renderNameTag(NametagData data) {
+    public static void renderNameTag(NametagData data, int maxDistance, int waypointScale, int paddingSize) {
         Minecraft mc = Minecraft.getMinecraft();
 
         double x = data.getX() - mc.getRenderManager().viewerPosX;
@@ -55,8 +17,24 @@ public class Waypoint extends Module {
 
         double distance = mc.thePlayer.getDistance(data.getX(), data.getY(), data.getZ());
 
-        if (waypointMaxDistance.getValue() != -1 && distance > waypointMaxDistance.getValue()) {
+        if (maxDistance != -1 && distance > maxDistance) {
             return;
+        }
+
+        // For waypoints beyond render distance, normalize the direction to avoid centering
+        // Use Minecraft's render distance (chunks) converted to blocks (~16 blocks per chunk)
+        double renderDistanceBlocks = mc.gameSettings.renderDistanceChunks * 16.0 * 0.95; // 0.95 for safety margin
+        double renderDistanceMeters = Math.sqrt(x * x + y * y + z * z);
+        double displayDistance = distance; // Use actual distance for scale by default
+
+        if (renderDistanceMeters > renderDistanceBlocks) {
+            // Normalize coordinates to prevent far waypoints from centering on screen
+            double length = renderDistanceMeters;
+            double normalizedDistance = renderDistanceBlocks * 0.8;
+            x = (x / length) * normalizedDistance;
+            y = (y / length) * normalizedDistance;
+            z = (z / length) * normalizedDistance;
+            displayDistance = normalizedDistance; // Use normalized distance for consistent scale
         }
 
         GlStateManager.pushMatrix();
@@ -65,7 +43,7 @@ public class Waypoint extends Module {
         GlStateManager.rotate(-mc.getRenderManager().playerViewY, 0F, 1F, 0F);
         GlStateManager.rotate(mc.getRenderManager().playerViewX, 1F, 0F, 0F);
 
-        float scale = (float) (distance * 0.01f * waypointScale.getValue() / 100);
+        float scale = (float) (displayDistance * 0.01f * waypointScale / 100);
         scale = Math.max(scale, 0.02f);
 
         GlStateManager.scale(-scale, -scale, 1);
@@ -73,7 +51,7 @@ public class Waypoint extends Module {
         String text = "§f" + data.getText() + " §7(" + (int) distance + "m)";
         int width = mc.fontRendererObj.getStringWidth(text) / 2;
 
-        int padding = waypointPaddingSize.getValue();
+        int padding = paddingSize;
 
         int left = -width - padding;
         int right = width + padding;
@@ -82,6 +60,7 @@ public class Waypoint extends Module {
 
         int bgColor = 0x55000000;
         int outlineColor = data.getColor() != null ? data.getColor().getRGB() : 0xFFFFFFFF;
+
 
         GlStateManager.disableDepth();
 

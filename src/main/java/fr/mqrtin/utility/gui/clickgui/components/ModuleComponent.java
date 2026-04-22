@@ -1,9 +1,9 @@
 
-package fr.mqrtin.utility.gui.components;
+package fr.mqrtin.utility.gui.clickgui.components;
 
 import fr.mqrtin.utility.Main;
 import fr.mqrtin.utility.module.impl.Module;
-import fr.mqrtin.utility.gui.Component;
+import fr.mqrtin.utility.gui.clickgui.Component;
 import fr.mqrtin.utility.module.property.Property;
 import fr.mqrtin.utility.module.property.properties.*;
 import net.minecraft.client.Minecraft;

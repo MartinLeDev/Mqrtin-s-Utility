@@ -7,7 +7,9 @@ public enum LabelPreset {
     CPS("CPS","{cps_left} | {cps_right}"),
     COORDINATES("Coordinates","{player_x} {player_y} {player_z}"),
     DIRECTION("Direction","{player_facing}"),
-    FPS("FPS", "{fps}")
+    FPS("FPS", "{fps}"),
+    MS("Ping", "{ping_ms}"),
+    IP("IP", "{serverIp}"),
     ;
     private final String labelName;
     private final String labelValue;

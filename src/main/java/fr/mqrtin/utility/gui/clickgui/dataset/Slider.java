@@ -1,4 +1,4 @@
-package fr.mqrtin.utility.gui.dataset;
+package fr.mqrtin.utility.gui.clickgui.dataset;
 
 import fr.mqrtin.utility.module.property.Property;
 
