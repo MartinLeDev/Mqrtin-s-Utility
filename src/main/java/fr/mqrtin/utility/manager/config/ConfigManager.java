@@ -3,8 +3,8 @@ package fr.mqrtin.utility.manager.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import fr.mqrtin.utility.module.property.Property;
-import fr.mqrtin.utility.module.property.PropertyManager;
+import fr.mqrtin.utility.module.impl.property.Property;
+import fr.mqrtin.utility.module.impl.property.PropertyManager;
 import net.minecraft.client.Minecraft;
 
 import java.io.File;

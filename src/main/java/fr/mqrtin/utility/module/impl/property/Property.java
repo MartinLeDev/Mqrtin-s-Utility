@@ -1,4 +1,4 @@
-package fr.mqrtin.utility.module.property;
+package fr.mqrtin.utility.module.impl.property;
 
 import com.google.gson.JsonObject;
 import fr.mqrtin.utility.module.impl.Module;

@@ -1,8 +1,8 @@
 package fr.mqrtin.utility.gui.clickgui.dataset.impl;
 
-import fr.mqrtin.utility.module.property.properties.IntProperty;
+import fr.mqrtin.utility.module.impl.property.properties.IntProperty;
 import fr.mqrtin.utility.gui.clickgui.dataset.Slider;
-import fr.mqrtin.utility.module.property.Property;
+import fr.mqrtin.utility.module.impl.property.Property;
 
 public class IntSlider extends Slider {
     private final IntProperty property;

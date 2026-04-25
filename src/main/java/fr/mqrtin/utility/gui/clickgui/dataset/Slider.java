@@ -1,6 +1,6 @@
 package fr.mqrtin.utility.gui.clickgui.dataset;
 
-import fr.mqrtin.utility.module.property.Property;
+import fr.mqrtin.utility.module.impl.property.Property;
 
 public abstract class Slider {
     public abstract double getInput();

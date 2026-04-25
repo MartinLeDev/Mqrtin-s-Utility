@@ -1,7 +1,7 @@
-package fr.mqrtin.utility.module.property.properties;
+package fr.mqrtin.utility.module.impl.property.properties;
 
 import com.google.gson.JsonObject;
-import fr.mqrtin.utility.module.property.Property;
+import fr.mqrtin.utility.module.impl.property.Property;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 

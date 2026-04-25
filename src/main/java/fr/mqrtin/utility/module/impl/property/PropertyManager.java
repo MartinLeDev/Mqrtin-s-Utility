@@ -1,9 +1,8 @@
-package fr.mqrtin.utility.module.property;
+package fr.mqrtin.utility.module.impl.property;
 
 
 import fr.mqrtin.utility.module.impl.Module;
-import fr.mqrtin.utility.module.property.properties.KeyBindProperty;
-import net.minecraft.client.settings.KeyBinding;
+import fr.mqrtin.utility.module.impl.property.properties.KeyBindProperty;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import java.lang.reflect.Field;

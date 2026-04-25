@@ -1,8 +1,8 @@
 package fr.mqrtin.utility.gui.clickgui.dataset.impl;
 
-import fr.mqrtin.utility.module.property.properties.PercentProperty;
+import fr.mqrtin.utility.module.impl.property.properties.PercentProperty;
 import fr.mqrtin.utility.gui.clickgui.dataset.Slider;
-import fr.mqrtin.utility.module.property.Property;
+import fr.mqrtin.utility.module.impl.property.Property;
 
 public class PercentageSlider extends Slider {
     private final PercentProperty property;

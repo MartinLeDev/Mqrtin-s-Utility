@@ -7,14 +7,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.mqrtin.utility.event.EventTarget;
 import fr.mqrtin.utility.event.events.Render3DEvent;
+import fr.mqrtin.utility.event.events.ServerDisconnectEvent;
 import fr.mqrtin.utility.event.events.TickEvent;
-import fr.mqrtin.utility.gui.clickgui.ClickGui;
+import fr.mqrtin.utility.gui.waypointgui.WaypointCreateGui;
 import fr.mqrtin.utility.gui.waypointgui.WaypointGui;
 import fr.mqrtin.utility.module.ModuleCategory;
 import fr.mqrtin.utility.module.impl.Module;
-import fr.mqrtin.utility.module.property.properties.IntProperty;
-import fr.mqrtin.utility.module.property.properties.KeyBindProperty;
-import fr.mqrtin.utility.module.property.properties.PercentProperty;
+import fr.mqrtin.utility.module.impl.property.properties.IntProperty;
+import fr.mqrtin.utility.module.impl.property.properties.KeyBindProperty;
+import fr.mqrtin.utility.module.impl.property.properties.PercentProperty;
 import fr.mqrtin.utility.utils.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
@@ -41,7 +42,8 @@ public class WaypointModule extends Module {
     private final IntProperty waypointPaddingSize = new IntProperty("Padding Size", 5, 0, 50);
     private final IntProperty waypointMaxDistance = new IntProperty("Max Distance", 500, -1, 5000);
     private final PercentProperty waypointScale = new PercentProperty("Waypoint size", 100, 0, 500, () -> true);
-    private final KeyBindProperty keyBindProperty = new KeyBindProperty("Open GUI", new KeyBinding("Open GUI", 0, "Mqrtin's waypoint"));
+    private final KeyBindProperty keyBindPropertyOpenGui = new KeyBindProperty("Open GUI", new KeyBinding("Manage Waypoints", 0, "Mqrtin's waypoint"));
+    private final KeyBindProperty keyBindPropertyWaypointsCreate = new KeyBindProperty("Open GUI", new KeyBinding("Create Waypoints", 0, "Mqrtin's waypoint"));
 
     public WaypointModule() {
         super("Waypoint", ModuleCategory.QOL, false);
@@ -58,17 +60,23 @@ public class WaypointModule extends Module {
         loadWaypoints();
     }
 
-    // ...existing code...
+    @EventTarget
+    public void onServerDisconnect(ServerDisconnectEvent event){
+        waypoints.removeIf(waypoint -> waypoint.temporary);
+    }
+
     @EventTarget
     public void onTick(TickEvent event){
         if (event.getStage() != TickEvent.Stage.END) return;
-        if(!keyBindProperty.getKeyBinding().isPressed())
-            return;
 
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.thePlayer != null) {
+        if (mc.thePlayer == null) return;
+        if(keyBindPropertyOpenGui.getKeyBinding().isPressed())
             mc.displayGuiScreen(new WaypointGui());
-        }
+        if(keyBindPropertyWaypointsCreate.getKeyBinding().isPressed())
+                    mc.displayGuiScreen(new WaypointCreateGui(this));
+
+
     }
 
     @EventTarget
@@ -83,7 +91,9 @@ public class WaypointModule extends Module {
         }
 
         waypoints.forEach( waypoint -> {
-            RenderUtil.renderNameTag(waypoint.toNametag(), waypointMaxDistance.getValue(), waypointScale.getValue(), waypointPaddingSize.getValue());
+            if(waypoint.shouldRender()){
+                RenderUtil.renderNameTag(waypoint.toNametag(), waypointMaxDistance.getValue(), waypointScale.getValue(), waypointPaddingSize.getValue());
+            }
         });
     }
 
@@ -100,6 +110,7 @@ public class WaypointModule extends Module {
                 wpJson.addProperty("color", String.format("%06X", waypoint.color.getRGB() & 0xFFFFFF));
                 wpJson.addProperty("world", waypoint.world);
                 wpJson.addProperty("serverIp", waypoint.serverIp);
+                wpJson.addProperty("hidden", waypoint.hidden);
                 waypointsArray.add(wpJson);
             }
 
@@ -141,13 +152,14 @@ public class WaypointModule extends Module {
                     float y = wpJson.get("y").getAsFloat();
                     float z = wpJson.get("z").getAsFloat();
                     String colorStr = wpJson.get("color").getAsString();
+                    Boolean hiddenBool = !wpJson.has("hidden") || wpJson.get("hidden").getAsBoolean();
                     String world = wpJson.has("world") ? wpJson.get("world").getAsString() : "world";
                     String serverIp = wpJson.has("serverIp") ? wpJson.get("serverIp").getAsString() : "singleplayer";
 
                     int colorInt = (int) Long.parseLong(colorStr, 16);
                     Color color = new Color(colorInt);
 
-                    waypoints.add(new Waypoint(name, color, world, serverIp, x, y, z, false));
+                    waypoints.add(new Waypoint(name, color, world, serverIp, x, y, z, false, hiddenBool));
                 }
 
                 System.out.println("[WaypointModule] " + waypoints.size() + " waypoints chargés");
@@ -167,62 +179,56 @@ public class WaypointModule extends Module {
         public float z;
         public Color color;
         public boolean temporary;
+        public boolean hidden;
+
+        public boolean shouldRender(){
+            return getIP().equals(serverIp) && Minecraft.getMinecraft().theWorld.getWorldType().getWorldTypeName().equals(world) && !hidden;
+        }
+
+        public boolean isInTheSameServer(){
+            return getIP().equals(serverIp) && Minecraft.getMinecraft().theWorld.getWorldType().getWorldTypeName().equals(world);
+        }
 
         public RenderUtil.NametagData toNametag(){
             return new RenderUtil.NametagData(name, color, x, y, z);
         }
 
-        public Waypoint(String name, float x, float y, float z){
-            this.name = name;
-            this.color = Color.WHITE;
-            this.world = Minecraft.getMinecraft().theWorld.getWorldType().getWorldTypeName();
+
+        public static String getIP() {
             ServerData currentServerData = Minecraft.getMinecraft().getCurrentServerData();
             if(currentServerData != null){
                 String serverIP = currentServerData.serverIP;
-                this.serverIp = serverIP == null || serverIP.isEmpty() ? "singleplayer" : serverIP;
+                return serverIP == null || serverIP.isEmpty() ? "singleplayer" : serverIP;
             } else {
-                this.serverIp = Minecraft.getMinecraft().getIntegratedServer().getName();
+                return Minecraft.getMinecraft().getIntegratedServer().getWorldName();
             }
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.temporary = false;
         }
+
         public Waypoint(String name, Color color, float x, float y, float z){
             this.name = name;
             this.color = Color.WHITE;
             this.world = Minecraft.getMinecraft().theWorld.getWorldType().getWorldTypeName();
-            ServerData currentServerData = Minecraft.getMinecraft().getCurrentServerData();
-            if(currentServerData != null){
-                String serverIP = currentServerData.serverIP;
-                this.serverIp = serverIP == null || serverIP.isEmpty() ? "singleplayer" : serverIP;
-            } else {
-                this.serverIp = Minecraft.getMinecraft().getIntegratedServer().getName();
-            }
+            this.serverIp = getIP();
             this.x = x;
             this.y = y;
             this.z = z;
             this.temporary = false;
+            this.hidden = false;
         }
 
-        public Waypoint(String name, Color color, float x, float y, float z, boolean temporary){
+        public Waypoint(String name, Color color, float x, float y, float z, boolean temporary, boolean hidden){
             this.name = name;
-            this.color = Color.WHITE;
+            this.color = color;
             this.world = Minecraft.getMinecraft().theWorld.getWorldType().getWorldTypeName();
-            ServerData currentServerData = Minecraft.getMinecraft().getCurrentServerData();
-            if(currentServerData != null){
-                String serverIP = currentServerData.serverIP;
-                this.serverIp = serverIP == null || serverIP.isEmpty() ? "singleplayer" : serverIP;
-            } else {
-                this.serverIp = Minecraft.getMinecraft().getIntegratedServer().getName();
-            }
+            this.serverIp = getIP();
             this.x = x;
             this.y = y;
             this.z = z;
             this.temporary = temporary;
+            this.hidden = hidden;
         }
 
-        public Waypoint(String name, Color color, String world, String serverIp, float x, float y, float z, boolean temporary){
+        public Waypoint(String name, Color color, String world, String serverIp, float x, float y, float z, boolean temporary, boolean hidden){
             this.name = name;
             this.color = color;
             this.world = world;
@@ -231,6 +237,7 @@ public class WaypointModule extends Module {
             this.y = y;
             this.z = z;
             this.temporary = temporary;
+            this.hidden = hidden;
         }
 
     }

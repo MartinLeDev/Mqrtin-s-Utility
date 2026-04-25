@@ -4,7 +4,7 @@ import fr.mqrtin.utility.event.EventTarget;
 import fr.mqrtin.utility.event.events.TickEvent;
 import fr.mqrtin.utility.module.ModuleCategory;
 import fr.mqrtin.utility.module.impl.Module;
-import fr.mqrtin.utility.module.property.properties.ModeProperty;
+import fr.mqrtin.utility.module.impl.property.properties.ModeProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;

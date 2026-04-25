@@ -3,6 +3,7 @@ package fr.mqrtin.utility.gui.waypointgui;
 import fr.mqrtin.utility.module.modules.QOL.WaypointModule;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import fr.mqrtin.utility.gui.waypointgui.GuiFlatButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.Tessellator;
@@ -28,6 +29,9 @@ public class WaypointCreateGui extends GuiScreen {
 
     private boolean draggingHue, draggingSat, draggingBri;
 
+    // ── NEW: temporary flag ──────────────────────────────────────────
+    private boolean temporary = false;
+
     public WaypointCreateGui(WaypointModule waypointModuleInstance) {
         this.waypointModuleInstance = waypointModuleInstance;
         this.editingWaypoint = null;
@@ -38,6 +42,7 @@ public class WaypointCreateGui extends GuiScreen {
         this.waypointModuleInstance = waypointModuleInstance;
         this.editingWaypoint = waypoint;
         this.selectedColor = waypoint.color;
+        this.temporary = waypoint.temporary;
     }
 
     @Override
@@ -72,7 +77,7 @@ public class WaypointCreateGui extends GuiScreen {
     @Override
     public void initGui() {
         int guiWidth = 350;
-        int guiHeight = 300;
+        int guiHeight = 320; // légèrement agrandi pour la checkbox
         int x = (this.width - guiWidth) / 2;
         int y = (this.height - guiHeight) / 2;
 
@@ -111,15 +116,15 @@ public class WaypointCreateGui extends GuiScreen {
 
         colorField.setText(String.format("%06X", selectedColor.getRGB() & 0xFFFFFF));
 
-        buttonList.add(new GuiButton(0, x + guiWidth / 2 - 125, y + guiHeight - 30, 120, 20, "Cancel"));
-        buttonList.add(new GuiButton(1, x + guiWidth / 2 + 5, y + guiHeight - 30, 120, 20,
+        buttonList.add(new GuiFlatButton(0, x + guiWidth / 2 - 125, y + guiHeight - 30, 120, 20, "Cancel"));
+        buttonList.add(new GuiFlatButton(1, x + guiWidth / 2 + 5, y + guiHeight - 30, 120, 20,
                 editingWaypoint != null ? "Save" : "Create"));
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         int guiWidth = 350;
-        int guiHeight = 300;
+        int guiHeight = 320;
         int x = (this.width - guiWidth) / 2;
         int y = (this.height - guiHeight) / 2;
 
@@ -147,6 +152,16 @@ public class WaypointCreateGui extends GuiScreen {
 
         drawColorSliders(x + 10, y + 195, guiWidth - 20);
 
+        // ── Temporary checkbox ───────────────────────────────────────
+        int checkX = x + 10;
+        int checkY = y + guiHeight - 55;
+        drawRect(checkX, checkY, checkX + 10, checkY + 10, 0xFF555555);
+        if (temporary) {
+            drawRect(checkX + 2, checkY + 2, checkX + 8, checkY + 8, 0xFF00CCFF);
+        }
+        fontRendererObj.drawString("Temporary (not saved)", checkX + 14, checkY + 1, 0xAAAAAA);
+        // ─────────────────────────────────────────────────────────────
+
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
@@ -154,55 +169,36 @@ public class WaypointCreateGui extends GuiScreen {
         int height = 8;
         int spacing = 6;
 
-        // =========================
         // HUE
-        // =========================
         for (int i = 0; i < width; i++) {
             float h = (float) i / width;
             drawRect(x + i, y, x + i + 1, y + height, Color.HSBtoRGB(h, 1f, 1f));
         }
-
         drawRect(x + (int)(hue * width) - 1, y,
                 x + (int)(hue * width) + 1, y + height, 0xFF000000);
 
-
-        // =========================
-        // SATURATION (FIX)
-        // =========================
+        // SATURATION
         int satY = y + height + spacing;
-
         for (int i = 0; i < width; i++) {
             float sat = (float) i / width;
             int color = Color.HSBtoRGB(hue, sat, 1f);
-
             drawRect(x + i, satY, x + i + 1, satY + height, color);
         }
-
         drawRect(x + (int)(saturation * width) - 1, satY,
                 x + (int)(saturation * width) + 1, satY + height, 0xFF000000);
 
-
-        // =========================
-        // BRIGHTNESS (FIX)
-        // =========================
+        // BRIGHTNESS
         int briY = satY + height + spacing;
-
         for (int i = 0; i < width; i++) {
             float bri = (float) i / width;
             int color = Color.HSBtoRGB(hue, saturation, bri);
-
             drawRect(x + i, briY, x + i + 1, briY + height, color);
         }
-
         drawRect(x + (int)(brightness * width) - 1, briY,
                 x + (int)(brightness * width) + 1, briY + height, 0xFF000000);
 
-
-        // =========================
         // UPDATE COLOR
-        // =========================
         selectedColor = Color.getHSBColor(hue, saturation, brightness);
-
         if (draggingHue || draggingSat || draggingBri) {
             colorField.setText(String.format("%06X", selectedColor.getRGB() & 0xFFFFFF));
         }
@@ -235,7 +231,6 @@ public class WaypointCreateGui extends GuiScreen {
         w.pos(right, bottom, 0).color(er, eg, eb, ea).endVertex();
         t.draw();
 
-        // 🔥 RESET CLEAN (c’était ça le problème)
         GL11.glShadeModel(GL11.GL_FLAT);
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -251,8 +246,9 @@ public class WaypointCreateGui extends GuiScreen {
         colorField.mouseClicked(mouseX, mouseY, button);
 
         int guiWidth = 350;
+        int guiHeight = 320;
         int x = (this.width - guiWidth) / 2 + 10;
-        int y = (this.height - 300) / 2 + 195;
+        int y = (this.height - guiHeight) / 2 + 195;
         int width = guiWidth - 20;
 
         int height = 8;
@@ -261,6 +257,14 @@ public class WaypointCreateGui extends GuiScreen {
         if (isHover(mouseX, mouseY, x, y, width, height)) draggingHue = true;
         if (isHover(mouseX, mouseY, x, y + height + spacing, width, height)) draggingSat = true;
         if (isHover(mouseX, mouseY, x, y + (height + spacing) * 2, width, height)) draggingBri = true;
+
+        // ── Temporary checkbox click ─────────────────────────────────
+        int checkX = (this.width - guiWidth) / 2 + 10;
+        int checkY = (this.height - guiHeight) / 2 + guiHeight - 55;
+        if (isHover(mouseX, mouseY, checkX, checkY, 10, 10)) {
+            temporary = !temporary;
+        }
+        // ─────────────────────────────────────────────────────────────
 
         super.mouseClicked(mouseX, mouseY, button);
     }
@@ -313,9 +317,11 @@ public class WaypointCreateGui extends GuiScreen {
                     editingWaypoint.y = wy;
                     editingWaypoint.z = wz;
                     editingWaypoint.color = selectedColor;
+                    editingWaypoint.temporary = temporary; // ── NEW
                 } else {
+                    // ── NEW: passe temporary au constructeur complet ─
                     waypointModuleInstance.getWaypoints().add(
-                            new WaypointModule.Waypoint(name, selectedColor, wx, wy, wz)
+                            new WaypointModule.Waypoint(name, selectedColor, wx, wy, wz, temporary, false)
                     );
                 }
 

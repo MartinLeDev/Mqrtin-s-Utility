@@ -2,9 +2,9 @@ package fr.mqrtin.utility.module.impl;
 
 import fr.mqrtin.utility.Main;
 import fr.mqrtin.utility.module.ModuleCategory;
-import fr.mqrtin.utility.module.property.Property;
-import fr.mqrtin.utility.module.property.properties.BooleanProperty;
-import fr.mqrtin.utility.module.property.properties.KeyBindProperty;
+import fr.mqrtin.utility.module.impl.property.Property;
+import fr.mqrtin.utility.module.impl.property.properties.BooleanProperty;
+import fr.mqrtin.utility.module.impl.property.properties.KeyBindProperty;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 

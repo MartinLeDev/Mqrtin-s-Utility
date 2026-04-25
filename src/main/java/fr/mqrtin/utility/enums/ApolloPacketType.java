@@ -3,11 +3,13 @@ package fr.mqrtin.utility.enums;
 import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 import com.lunarclient.apollo.common.v1.BlockLocation;
+import com.lunarclient.apollo.common.v1.Location;
 import com.lunarclient.apollo.common.v1.Uuid;
 import com.lunarclient.apollo.glow.v1.OverrideGlowEffectMessage;
 import com.lunarclient.apollo.notification.v1.DisplayNotificationMessage;
 import com.lunarclient.apollo.player.v1.UpdatePlayerWorldMessage;
 import com.lunarclient.apollo.player.v1.PlayerHandshakeMessage;
+import com.lunarclient.apollo.team.v1.UpdateTeamMembersMessage;
 import com.lunarclient.apollo.waypoint.v1.DisplayWaypointMessage;
 import com.lunarclient.apollo.waypoint.v1.RemoveWaypointMessage;
 import fr.mqrtin.utility.module.impl.Module;
@@ -54,16 +56,7 @@ public enum ApolloPacketType {
             DisplayWaypointMessage.class,
             msg -> {
                 DisplayWaypointMessage displayWaypointMessage = (DisplayWaypointMessage) msg;
-                TextUtils.log("[Apollo] Waypoint reçu: " + displayWaypointMessage.toString());
-                TextUtils.log("Name : " + displayWaypointMessage.getName());
-                TextUtils.log("Color : " + displayWaypointMessage.getColor());
-                TextUtils.log("Hidden : " + displayWaypointMessage.getHidden());
-                TextUtils.log("PreventRemoval : " + displayWaypointMessage.getPreventRemoval());
                 BlockLocation location = displayWaypointMessage.getLocation();
-                TextUtils.log("Monde : " + location.getWorld());
-                TextUtils.log("X : " + location.getX());
-                TextUtils.log("Y : " + location.getY());
-                TextUtils.log("Z : " + location.getZ());
 
                 WaypointModule instance = Module.getInstance(WaypointModule.class);
                 instance.getWaypoints().add(new WaypointModule.Waypoint(
@@ -72,7 +65,8 @@ public enum ApolloPacketType {
                         location.getX(),
                         location.getY(),
                         location.getZ(),
-                        true
+                        true,
+                        displayWaypointMessage.getHidden()
                 ));
             }
     ),
@@ -105,6 +99,27 @@ public enum ApolloPacketType {
                 TextUtils.log("UUID : " + uuid);
                 TextUtils.log("COLOR : " + msg1.getColor());
             }
+    ),
+
+    UPDATE_TEAM(
+        "UpdateTeamMembersMessage",
+        UpdateTeamMembersMessage.class,
+        msg -> {
+            UpdateTeamMembersMessage teamMsg = (UpdateTeamMembersMessage) msg;
+            teamMsg.getMembersList().forEach(
+                    member -> {
+                        TextUtils.log("--------------------");
+                        UUID uuid = new UUID(member.getPlayerUuid().getHigh64(), member.getPlayerUuid().getLow64());
+                        TextUtils.log("UUID : " + uuid.toString());
+                        TextUtils.log("COLOR : " + member.getMarkerColor());
+                        Location location = member.getLocation();
+                        TextUtils.log("World : " + location.getWorld());
+                        TextUtils.log("x : " + location.getX());
+                        TextUtils.log("y : " + location.getY());
+                        TextUtils.log("z : " + location.getZ());
+                    }
+            );
+        }
     )
 
 

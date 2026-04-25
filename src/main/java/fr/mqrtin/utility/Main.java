@@ -13,7 +13,7 @@ import fr.mqrtin.utility.module.modules.QOL.FullBright;
 import fr.mqrtin.utility.module.modules.QOL.WaypointModule;
 import fr.mqrtin.utility.module.modules.other.DebugModule;
 import fr.mqrtin.utility.module.modules.settings.TabOverlay;
-import fr.mqrtin.utility.module.property.PropertyManager;
+import fr.mqrtin.utility.module.impl.property.PropertyManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;

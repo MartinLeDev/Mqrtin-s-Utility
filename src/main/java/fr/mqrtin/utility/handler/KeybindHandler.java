@@ -2,11 +2,12 @@ package fr.mqrtin.utility.handler;
 
 import fr.mqrtin.utility.Main;
 import fr.mqrtin.utility.event.EventDispatcher;
+import fr.mqrtin.utility.event.events.ServerDisconnectEvent;
 import fr.mqrtin.utility.event.events.TickEvent;
-import fr.mqrtin.utility.module.property.PropertyManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 public class KeybindHandler {
 
@@ -24,5 +25,10 @@ public class KeybindHandler {
                 module.setEnabled(!module.isEnabled());
             }
         }));
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoggedOutEven(FMLNetworkEvent.ClientDisconnectionFromServerEvent event){
+        EventDispatcher.dispatchEvent(new ServerDisconnectEvent());
     }
 }
