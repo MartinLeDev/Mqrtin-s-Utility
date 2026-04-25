@@ -6,6 +6,7 @@ import fr.mqrtin.utility.handler.ApolloPacketHandler;
 import fr.mqrtin.utility.handler.KeybindHandler;
 import fr.mqrtin.utility.manager.config.ConfigManager;
 import fr.mqrtin.utility.module.ModuleManager;
+import fr.mqrtin.utility.module.modules.QOL.TeamViewModule;
 import fr.mqrtin.utility.module.modules.hidden.CPSCounter;
 import fr.mqrtin.utility.module.modules.HUD.LabelModule;
 import fr.mqrtin.utility.module.modules.QOL.NoClickDelay;
@@ -33,7 +34,7 @@ public class Main {
         moduleManager = new ModuleManager();
 
         // Enregistrer les modules
-        moduleManager.register(LabelModule.class, CPSCounter.class, NoClickDelay.class, FullBright.class, TabOverlay.class, WaypointModule.class, DebugModule.class);
+        moduleManager.register(LabelModule.class, CPSCounter.class, NoClickDelay.class, FullBright.class, TabOverlay.class, WaypointModule.class, DebugModule.class, TeamViewModule.class);
 
         // Créer le PropertyManager et enregistrer les propriétés
         propertyManager = new PropertyManager();

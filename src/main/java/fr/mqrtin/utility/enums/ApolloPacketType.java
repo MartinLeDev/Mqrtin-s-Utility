@@ -13,6 +13,7 @@ import com.lunarclient.apollo.team.v1.UpdateTeamMembersMessage;
 import com.lunarclient.apollo.waypoint.v1.DisplayWaypointMessage;
 import com.lunarclient.apollo.waypoint.v1.RemoveWaypointMessage;
 import fr.mqrtin.utility.module.impl.Module;
+import fr.mqrtin.utility.module.modules.QOL.TeamViewModule;
 import fr.mqrtin.utility.module.modules.QOL.WaypointModule;
 import fr.mqrtin.utility.utils.TextUtils;
 
@@ -106,19 +107,7 @@ public enum ApolloPacketType {
         UpdateTeamMembersMessage.class,
         msg -> {
             UpdateTeamMembersMessage teamMsg = (UpdateTeamMembersMessage) msg;
-            teamMsg.getMembersList().forEach(
-                    member -> {
-                        TextUtils.log("--------------------");
-                        UUID uuid = new UUID(member.getPlayerUuid().getHigh64(), member.getPlayerUuid().getLow64());
-                        TextUtils.log("UUID : " + uuid.toString());
-                        TextUtils.log("COLOR : " + member.getMarkerColor());
-                        Location location = member.getLocation();
-                        TextUtils.log("World : " + location.getWorld());
-                        TextUtils.log("x : " + location.getX());
-                        TextUtils.log("y : " + location.getY());
-                        TextUtils.log("z : " + location.getZ());
-                    }
-            );
+            Module.getInstance(TeamViewModule.class).update(teamMsg.getMembersList());
         }
     )
 
